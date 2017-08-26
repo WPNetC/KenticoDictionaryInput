@@ -102,11 +102,25 @@ namespace CMSApp.CMSFormControls
 
             SetValues(null);
         }
-
-        public override void Dispose()
+        
+        protected void btnDel_Click(object sender, EventArgs e)
         {
-            Session[sKey] = null;
-            base.Dispose();
+            var btn = sender as Button;
+            if (btn == null || btn.CommandArgument == null)
+                return;
+
+            var arg = btn.CommandArgument;
+            _dic.Remove(arg);
+            SetValues(null);
+        }
+
+        protected void btnSave_Click(object sender, EventArgs e)
+        {
+            var btn = sender as Button;
+            if (btn == null || btn.CommandArgument == null)
+                return;
+
+            var arg = btn.CommandArgument;
         }
     }
 }
