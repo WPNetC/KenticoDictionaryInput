@@ -1,11 +1,10 @@
-﻿using CMS.FormEngine.Web.UI;
+﻿using CMS.EventLog;
+using CMS.FormEngine.Web.UI;
 using CMS.Helpers;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace CMSApp.CMSFormControls
@@ -50,9 +49,9 @@ namespace CMSApp.CMSFormControls
                 {
                     list = JsonConvert.DeserializeObject<List<string>>(strVal);
                 }
-                catch
+                catch(Exception ex)
                 {
-
+                    EventLogProvider.LogException("E", "DYNAMIC_INPUT", ex);
                 }
 
                 if (list != null)
@@ -113,18 +112,13 @@ namespace CMSApp.CMSFormControls
             var tbs = pnlItems.Controls
                 .OfType<TextBox>()
                 .Where(p => !string.IsNullOrEmpty(p.Text) && p.CssClass.Contains(_selector))
-                .ToArray();
+                .Select(p => p.Text)
+                .ToList();
 
             if (!tbs.Any())
                 return string.Empty;
 
-            var result = new List<string>();
-            foreach (var item in tbs)
-            {
-                result.Add(item.Text);
-            }
-
-            return JsonConvert.SerializeObject(result);
+            return JsonConvert.SerializeObject(tbs);
         }
     }
 }
